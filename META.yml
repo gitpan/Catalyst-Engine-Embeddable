@@ -1,0 +1,15 @@
+# http://module-build.sourceforge.net/META-spec.html
+#XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
+name:         Catalyst-Engine-Embeddable
+version:      0.0.1
+version_from: lib/Catalyst/Engine/Embeddable.pm
+installdirs:  site
+requires:
+    Catalyst::Runtime:             5.7011
+    HTTP::Body:                    0
+    HTTP::Request:                 0
+    HTTP::Response:                0
+    URI:                           0
+
+distribution_type: module
+generated_by: ExtUtils::MakeMaker version 6.30_01

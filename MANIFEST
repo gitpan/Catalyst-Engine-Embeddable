@@ -1,0 +1,9 @@
+t/lib/TestApp/Controller/Root.pm
+t/lib/TestApp.pm
+t/request.t
+Changes
+Makefile.PL
+README
+MANIFEST
+lib/Catalyst/Engine/Embeddable.pm
+META.yml                                 Module meta-data (added by MakeMaker)
