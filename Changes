@@ -1,4 +1,8 @@
-Author: Daniel Ruoso <daniel@ruoso.com>
-Date:   12 December 2007
+0.000002 2009-05-22 Tomas Doran
 
-    initial revision
+    - Reduce perl dependency to 5.8.6
+    - Update to use Moose and Catalyst 5.80
+
+0.0.1 2007-12-12 Daniel Ruoso
+
+    - Initial revision

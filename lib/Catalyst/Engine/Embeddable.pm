@@ -1,77 +1,76 @@
-{   package Catalyst::Engine::Embeddable;
+package Catalyst::Engine::Embeddable;
+use Moose;
+use URI;
+use HTTP::Body;
+use HTTP::Response;
+use namespace::autoclean;
 
-    our $VERSION = '0.0.1';
-    use base qw(Catalyst::Engine);
-    use strict;
-    use warnings;
-    use URI;
-    use HTTP::Body;
-    use HTTP::Response;
+extends 'Catalyst::Engine';
 
-    sub prepare_request {
-        my ($self, $c, $req, $res_ref) = @_;
-        $c->req->{_engine_embeddable}{req} = $req;
-        $c->req->{_engine_embeddable}{res} = $res_ref;
-        $c->req->method($req->method);
-    }
+our $VERSION = '0.000002';
 
-    sub prepare_headers {
-        my ($self, $c) = @_;
-        $c->req->{_engine_embeddable}{req}->scan
-          (sub {
-               my ($name, $value) = @_;
-               $c->req->header($name, $value);
-           });
-    }
+sub prepare_request {
+    my ($self, $c, $req, $res_ref) = @_;
+    $c->req->{_engine_embeddable}{req} = $req;
+    $c->req->{_engine_embeddable}{res} = $res_ref;
+    $c->req->method($req->method);
+}
 
-    sub prepare_path {
-        my ($self, $c) = @_;
+sub prepare_headers {
+    my ($self, $c) = @_;
+    $c->req->{_engine_embeddable}{req}->scan
+      (sub {
+           my ($name, $value) = @_;
+           $c->req->header($name, $value);
+       });
+}
 
-        my $uri = $c->req->{_engine_embeddable}{req}->uri();
-        my $base = $uri->clone; $base->path('/');
+sub prepare_path {
+    my ($self, $c) = @_;
 
-        $c->req->uri($uri);
-        $c->req->base($base);
-    }
+    my $uri = $c->req->{_engine_embeddable}{req}->uri();
+    my $base = $uri->clone; $base->path('/');
 
-    sub prepare_query_parameters {
-        my ($self, $c) = @_;
-        my %params = $c->req->{_engine_embeddable}{req}->uri->query_form;
-        $c->req->query_parameters(\%params);
-    }
+    $c->req->uri($uri);
+    $c->req->base($base);
+}
 
-    sub prepare_body {
-        my ($self, $c) = @_;
-        my $req = $c->req->{_engine_embeddable}{req};
-        $req->content_length(0) unless $req->content_length;
+sub prepare_query_parameters {
+    my ($self, $c) = @_;
+    my %params = $c->req->{_engine_embeddable}{req}->uri->query_form;
+    $c->req->query_parameters(\%params);
+}
 
-        $c->req->content_encoding($req->content_encoding);
-        $c->req->content_type($req->content_type);
-        $c->req->content_length($req->content_length);
+sub prepare_body {
+    my ($self, $c) = @_;
+    my $req = $c->req->{_engine_embeddable}{req};
+    $req->content_length(0) unless $req->content_length;
 
-        my $http_body = HTTP::Body->new($c->req->content_type, $c->req->content_length);
-        $http_body->add($req->content());
-        $c->req->{_body} = $http_body;
-    }
+    $c->req->content_encoding($req->content_encoding);
+    $c->req->content_type($req->content_type);
+    $c->req->content_length($req->content_length);
 
-    sub finalize_headers {
-        my ($self, $c) = @_;
+    my $http_body = HTTP::Body->new($c->req->content_type, $c->req->content_length);
+    $http_body->add($req->content());
+    $c->req->{_body} = $http_body;
+}
 
-        my $response = HTTP::Response->new($c->res->status,
-                                           'Catalyst-Engine-Embeddable',
-                                           $c->res->headers);
+sub finalize_headers {
+    my ($self, $c) = @_;
 
-        ${$c->req->{_engine_embeddable}{res}} = $response;
-    }
+    my $response = HTTP::Response->new($c->res->status,
+                                       'Catalyst-Engine-Embeddable',
+                                       $c->res->headers);
 
-    sub finalize_body {
-        my ($self, $c) = @_;
-        ${$c->req->{_engine_embeddable}{res}}->content($c->res->body());
-    }
+    ${$c->req->{_engine_embeddable}{res}} = $response;
+}
 
-};
-1;
+sub finalize_body {
+    my ($self, $c) = @_;
+    ${$c->req->{_engine_embeddable}{res}}->content($c->res->body());
+}
 
+__PACKAGE__->meta->make_immutable;
 __END__
 
 =head1 NAME
@@ -124,7 +123,7 @@ The following methods were overriden from Catalyst::Engine.
 
 =item $engine->prepare_request($c, $http_request, $http_response_ret_ref)
 
-This method is overrided in order to store the request and the
+This method is overriden in order to store the request and the
 response in $c as to continue the processing later. The scalar ref
 here will be used to set the response object, as there is no other way
 to obtain the response.
@@ -170,7 +169,9 @@ L<HTTP::Reponse>, L<Catalyst>
 
 =head1 AUTHORS
 
-Daniel Ruoso C<daniel.ruoso@verticalone.pt>
+Daniel Ruoso C<daniel@ruoso.com>
+
+Currently maintained by Tomas Doran (t0m) C<bobtfish@bobtfish.net>
 
 =head1 BUG REPORTS
 

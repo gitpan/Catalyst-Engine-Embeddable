@@ -1,15 +1,29 @@
-# http://module-build.sourceforge.net/META-spec.html
-#XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
-name:         Catalyst-Engine-Embeddable
-version:      0.0.1
-version_from: lib/Catalyst/Engine/Embeddable.pm
-installdirs:  site
-requires:
-    Catalyst::Runtime:             5.7011
-    HTTP::Body:                    0
-    HTTP::Request:                 0
-    HTTP::Response:                0
-    URI:                           0
-
+---
+abstract: 'Use a Catalyst application as an object'
+author:
+  - 'Daniel Ruoso C<daniel@ruoso.com>'
+build_requires:
+  ExtUtils::MakeMaker: 6.42
+configure_requires:
+  ExtUtils::MakeMaker: 6.42
 distribution_type: module
-generated_by: ExtUtils::MakeMaker version 6.30_01
+generated_by: 'Module::Install version 0.87'
+license: perl
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: Catalyst-Engine-Embeddable
+no_index:
+  directory:
+    - inc
+    - t
+requires:
+  Catalyst::Runtime: 5.80004
+  HTTP::Body: 0
+  HTTP::Request: 0
+  HTTP::Response: 0
+  URI: 0
+  namespace::autoclean: 0
+resources:
+  license: http://dev.perl.org/licenses/
+version: 0.000002
