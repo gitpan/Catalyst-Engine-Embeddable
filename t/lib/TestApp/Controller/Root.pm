@@ -20,4 +20,19 @@ sub bar : Local {
     $c->res->body('Hello '.$c->req->param('who').'!');
 }
 
+sub mkuri : Local {
+    my ( $self, $c ) = @_;
+    $c->res->body($c->uri_for('/path/to/somewhere'));
+}
+
+sub mkuriwithpath : Local {
+    my ( $self, $c ) = @_;
+    $c->res->body($c->uri_for('/path/to/somewhere', { baz => 'qux' }));
+}
+
+sub eatit : Local {
+    my ( $self, $c ) = @_;
+    die 'DIAF';
+}
+
 1;

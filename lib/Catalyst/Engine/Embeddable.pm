@@ -7,12 +7,13 @@ use namespace::autoclean;
 
 extends 'Catalyst::Engine';
 
-our $VERSION = '0.000002';
+our $VERSION = '0.000003';
 
 sub prepare_request {
-    my ($self, $c, $req, $res_ref) = @_;
+    my ($self, $c, $req, $res_ref, $err_ref) = @_;
     $c->req->{_engine_embeddable}{req} = $req;
     $c->req->{_engine_embeddable}{res} = $res_ref;
+    $c->req->{_engine_embeddable}{err} = $err_ref;
     $c->req->method($req->method);
 }
 
@@ -29,7 +30,7 @@ sub prepare_path {
     my ($self, $c) = @_;
 
     my $uri = $c->req->{_engine_embeddable}{req}->uri();
-    my $base = $uri->clone; $base->path('/');
+    my $base = $uri->clone; $base->path('/'); $base->path_query('');
 
     $c->req->uri($uri);
     $c->req->base($base);
@@ -53,6 +54,17 @@ sub prepare_body {
     my $http_body = HTTP::Body->new($c->req->content_type, $c->req->content_length);
     $http_body->add($req->content());
     $c->req->{_body} = $http_body;
+}
+
+sub finalize_error {
+    my ($self, $c) = @_;
+
+    $self->next::method($c, @_);
+
+    @{ $c->req->{_engine_embeddable}{err} } = @{ $c->error }
+		if $c->req->{_engine_embeddable}{err};
+
+    $c->res->status(500);
 }
 
 sub finalize_headers {
